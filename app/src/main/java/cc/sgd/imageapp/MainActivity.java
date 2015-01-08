@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
+// todo 做成图库
 public class MainActivity extends ActionBarActivity {
 
     @Override
