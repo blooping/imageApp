@@ -8,22 +8,21 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.io.File;
 
-// todo 打开SD卡上的图片并显示出来
+// todo 读取未知文件名的图片
 public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String path = Environment.getExternalStorageDirectory().toString();
-        Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
-        File file = new File(Environment.getExternalStorageDirectory().toString() + "/DCIM/P41108-205029.jpg");
-        if (file.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(path + "/DCIM/P41108-205029.jpg");
+        String path = Environment.getExternalStorageDirectory().toString() + "/DCIM";
+        File file = new File(path);
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(files[4])); //这里4是随便设定的，只是为了保证不会刚好取到文件夹
             ImageView imageView = (ImageView) findViewById(R.id.imageView);
             imageView.setImageBitmap(bitmap);
         }
