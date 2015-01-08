@@ -1,17 +1,32 @@
 package cc.sgd.imageapp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-// todo 做成图库
+import java.io.File;
+
+// todo 打开SD卡上的图片并显示出来
 public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        String path = Environment.getExternalStorageDirectory().toString();
+        Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+        File file = new File(Environment.getExternalStorageDirectory().toString() + "/DCIM/P41108-205029.jpg");
+        if (file.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(path + "/DCIM/P41108-205029.jpg");
+            ImageView imageView = (ImageView) findViewById(R.id.imageView);
+            imageView.setImageBitmap(bitmap);
+        }
     }
 
 
