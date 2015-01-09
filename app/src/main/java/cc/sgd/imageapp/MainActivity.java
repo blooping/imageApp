@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import java.io.File;
 
-// todo 读取未知文件名的图片
+// todo 读取本地图片形成图库
 public class MainActivity extends ActionBarActivity {
 
     @Override
