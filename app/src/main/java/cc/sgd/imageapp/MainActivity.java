@@ -2,6 +2,7 @@ package cc.sgd.imageapp;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import cc.sgd.imageapp.adapter.GridViewAdapter;
 import cc.sgd.imageapp.model.ImageItem;
 
-// todo 读取本地图片形成图库
 public class MainActivity extends ActionBarActivity {
 
     private GridViewAdapter gridViewAdapter;
@@ -37,7 +37,7 @@ public class MainActivity extends ActionBarActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(MainActivity.this, i + " " + l,Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, i + " " + l, Toast.LENGTH_SHORT).show();
             }
         });
         gridViewAdapter.notifyDataSetChanged();
@@ -71,20 +71,14 @@ public class MainActivity extends ActionBarActivity {
         // 获取每个图片的文件名以及Bitmap数据
 
         String path = Environment.getExternalStorageDirectory().toString() + "/DCIM";
+        int length = 96;
         File dcim = new File(path);
         File[] files = dcim.listFiles();
         for (File file : files) {
-            if (file.isDirectory()) {
-                for (File f : file.listFiles()) {
-                    if(f.toString().endsWith(".jpg")) {
-                        Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(f));
-                        imageItems.add(new ImageItem(bitmap, f.toString()));
-                    }
-                }
-            } else {
-                if(file.toString().endsWith(".jpg")) {
-                    Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(file));
-                    imageItems.add(new ImageItem(bitmap, file.toString()));
+            if (!file.isDirectory()) {
+                if (file.toString().endsWith(".jpg")) {
+                    Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(String.valueOf(file)), length, length);
+                    imageItems.add(new ImageItem(bitmap, file.getName()));
                 }
             }
         }
