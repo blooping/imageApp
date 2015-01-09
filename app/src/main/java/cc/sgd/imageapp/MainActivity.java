@@ -7,25 +7,40 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
+
+import cc.sgd.imageapp.adapter.GridViewAdapter;
+import cc.sgd.imageapp.model.ImageItem;
 
 // todo 读取本地图片形成图库
 public class MainActivity extends ActionBarActivity {
+
+    private GridViewAdapter gridViewAdapter;
+    private GridView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String path = Environment.getExternalStorageDirectory().toString() + "/DCIM";
-        File file = new File(path);
-        if (file.isDirectory()) {
-            File[] files = file.listFiles();
-            Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(files[4])); //这里4是随便设定的，只是为了保证不会刚好取到文件夹
-            ImageView imageView = (ImageView) findViewById(R.id.imageView);
-            imageView.setImageBitmap(bitmap);
-        }
+
+        gridView = (GridView) findViewById(R.id.gridView);
+        gridViewAdapter = new GridViewAdapter(this, R.layout.row_grid, getData());
+        gridView.setAdapter(gridViewAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(MainActivity.this, i + " " + l,Toast.LENGTH_SHORT).show();
+            }
+        });
+        gridViewAdapter.notifyDataSetChanged();
     }
 
 
@@ -49,5 +64,30 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private ArrayList getData() {
+        final ArrayList imageItems = new ArrayList();
+        // 获取每个图片的文件名以及Bitmap数据
+
+        String path = Environment.getExternalStorageDirectory().toString() + "/DCIM";
+        File dcim = new File(path);
+        File[] files = dcim.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                for (File f : file.listFiles()) {
+                    if(f.toString().endsWith(".jpg")) {
+                        Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(f));
+                        imageItems.add(new ImageItem(bitmap, f.toString()));
+                    }
+                }
+            } else {
+                if(file.toString().endsWith(".jpg")) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(file));
+                    imageItems.add(new ImageItem(bitmap, file.toString()));
+                }
+            }
+        }
+        return imageItems;
     }
 }
