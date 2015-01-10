@@ -74,14 +74,60 @@ public class MainActivity extends ActionBarActivity {
         int length = 96;
         File dcim = new File(path);
         File[] files = dcim.listFiles();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inJustDecodeBounds = true;
+        options.inSampleSize = 4;
         for (File file : files) {
             if (!file.isDirectory()) {
                 if (file.toString().endsWith(".jpg")) {
-                    Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(String.valueOf(file)), length, length);
+                    Bitmap bitmap = decodeSampledBitmapFromFile(file.toString());
                     imageItems.add(new ImageItem(bitmap, file.getName()));
                 }
             }
         }
         return imageItems;
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight
+    ) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options) {
+        return calculateInSampleSize(options, 512, 384);
+    }
+
+    public static Bitmap decodeSampledBitmapFromFile(String filePath, int reqWidth, int reqHeight) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(filePath, options);
+    }
+
+
+    public static Bitmap decodeSampledBitmapFromFile(String filePath) {
+        return decodeSampledBitmapFromFile(filePath, 512, 384);
     }
 }
