@@ -43,7 +43,10 @@ public class MainActivity extends ActionBarActivity {
 //            }
 //        });
 //        gridViewAdapter.notifyDataSetChanged();
-        BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask();
+        gridView = (GridView) findViewById(R.id.gridView);
+        gridViewAdapter = new GridViewAdapter(this, R.layout.row_grid);
+        gridView.setAdapter(gridViewAdapter);
+        BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask(gridViewAdapter);
         bitmapWorkerTask.execute();
     }
 
@@ -136,30 +139,59 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-    private class BitmapWorkerTask extends AsyncTask<Void, Void, ArrayList> {
+    private class BitmapWorkerTask extends AsyncTask<Void, String, Void> {
+        private File targetDirector;
+        GridViewAdapter gridViewAdapter;
 
-
-        @Override
-        protected ArrayList doInBackground(Void... params) {
-
-            return getData();
+        public BitmapWorkerTask(GridViewAdapter gridViewAdapter) {
+            this.gridViewAdapter = gridViewAdapter;
         }
 
-        // Once complete, see if ImageView is still around and set bitmap.
         @Override
-        protected void onPostExecute(ArrayList list) {
-            gridView = (GridView) findViewById(R.id.gridView);
-            gridViewAdapter = new GridViewAdapter(MainActivity.this, R.layout.row_grid, list);
-            gridView.setAdapter(gridViewAdapter);
-            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    ImageItem imageItem = (ImageItem) adapterView.getItemAtPosition(i);
-                    Toast.makeText(MainActivity.this, imageItem.getTitle(), Toast.LENGTH_SHORT).show();
+        protected void onPreExecute() {
+            String path = Environment.getExternalStorageDirectory().toString() + "/DCIM";
+            targetDirector = new File(path);
+            super.onPreExecute();
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            File[] files = targetDirector.listFiles();
+            for (File file : files) {
+                if (!file.isDirectory()) {
+                    if (file.toString().endsWith(".jpg")) {
+                        publishProgress(file.toString());
+                    }
                 }
-            });
-            gridViewAdapter.notifyDataSetChanged();
-
+            }
+            return null;
         }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            gridViewAdapter.add(values[0]);
+//            gridViewAdapter.notifyDataSetChanged();
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+//            gridView = (GridView) findViewById(R.id.gridView);
+//            gridViewAdapter = new GridViewAdapter(MainActivity.this, R.layout.row_grid, list);
+//            gridView.setAdapter(gridViewAdapter);
+//            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                    ImageItem imageItem = (ImageItem) adapterView.getItemAtPosition(i);
+//                    Toast.makeText(MainActivity.this, imageItem.getTitle(), Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//            gridViewAdapter.notifyDataSetChanged();
+            gridViewAdapter.notifyDataSetChanged();
+            super.onPostExecute(result);
+        }
+
     }
 }
