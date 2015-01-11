@@ -3,6 +3,7 @@ package cc.sgd.imageapp;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -31,17 +32,19 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        gridView = (GridView) findViewById(R.id.gridView);
-        gridViewAdapter = new GridViewAdapter(this, R.layout.row_grid, getData());
-        gridView.setAdapter(gridViewAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ImageItem imageItem = (ImageItem) adapterView.getItemAtPosition(i);
-                Toast.makeText(MainActivity.this, imageItem.getTitle(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        gridViewAdapter.notifyDataSetChanged();
+//        gridView = (GridView) findViewById(R.id.gridView);
+//        gridViewAdapter = new GridViewAdapter(this, R.layout.row_grid, getData());
+//        gridView.setAdapter(gridViewAdapter);
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                ImageItem imageItem = (ImageItem) adapterView.getItemAtPosition(i);
+//                Toast.makeText(MainActivity.this, imageItem.getTitle(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//        gridViewAdapter.notifyDataSetChanged();
+        BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask();
+        bitmapWorkerTask.execute();
     }
 
 
@@ -130,5 +133,33 @@ public class MainActivity extends ActionBarActivity {
 
     public static Bitmap decodeSampledBitmapFromFile(String filePath) {
         return decodeSampledBitmapFromFile(filePath, 512, 384);
+    }
+
+
+    private class BitmapWorkerTask extends AsyncTask<Void, Void, ArrayList> {
+
+
+        @Override
+        protected ArrayList doInBackground(Void... params) {
+
+            return getData();
+        }
+
+        // Once complete, see if ImageView is still around and set bitmap.
+        @Override
+        protected void onPostExecute(ArrayList list) {
+            gridView = (GridView) findViewById(R.id.gridView);
+            gridViewAdapter = new GridViewAdapter(MainActivity.this, R.layout.row_grid, list);
+            gridView.setAdapter(gridViewAdapter);
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    ImageItem imageItem = (ImageItem) adapterView.getItemAtPosition(i);
+                    Toast.makeText(MainActivity.this, imageItem.getTitle(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            gridViewAdapter.notifyDataSetChanged();
+
+        }
     }
 }
