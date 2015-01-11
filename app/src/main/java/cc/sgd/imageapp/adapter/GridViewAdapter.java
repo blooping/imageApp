@@ -68,7 +68,7 @@ public class GridViewAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) row.getTag();
         }
-        new GetViewAsyncTask(position, holder, data.get(position)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+        new GetViewAsyncTask(position, holder, data.get(position)).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR,null);
         return row;
     }
 

@@ -23,6 +23,7 @@ import cc.sgd.imageapp.adapter.GridViewAdapter;
 import cc.sgd.imageapp.model.ImageItem;
 
 public class MainActivity extends ActionBarActivity {
+    // todo 使用图片缓存来提升速度
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +137,13 @@ public class MainActivity extends ActionBarActivity {
                 if (!file.isDirectory()) {
                     if (file.toString().endsWith(".jpg")) {
                         publishProgress(file.getAbsolutePath());
+                    }
+                } else {
+                    if(!file.toString().endsWith(".thumbnails"))
+                    for (File f : file.listFiles()) {
+                        if (f.toString().endsWith(".jpg")) {
+                            publishProgress(f.getAbsolutePath());
+                        }
                     }
                 }
             }
