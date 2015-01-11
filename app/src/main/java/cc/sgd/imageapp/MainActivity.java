@@ -37,7 +37,8 @@ public class MainActivity extends ActionBarActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(MainActivity.this, i + " " + l, Toast.LENGTH_SHORT).show();
+                ImageItem imageItem = (ImageItem) adapterView.getItemAtPosition(i);
+                Toast.makeText(MainActivity.this, imageItem.getTitle(), Toast.LENGTH_SHORT).show();
             }
         });
         gridViewAdapter.notifyDataSetChanged();
