@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 /**
  * Created by gdshen95 on 2015/1/9.
+ * 目前此类已不用
  */
 public class ImageItem {
     private Bitmap image;
