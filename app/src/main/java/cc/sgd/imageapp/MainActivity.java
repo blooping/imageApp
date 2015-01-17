@@ -2,72 +2,27 @@ package cc.sgd.imageapp;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import cc.sgd.imageapp.adapter.GridViewAdapter;
-import cc.sgd.imageapp.model.ImageItem;
+import cc.sgd.imageapp.app.HttpFileUpload;
 
 public class MainActivity extends ActionBarActivity {
     // todo 使用图片缓存来提升速度
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        GridView gridView = (GridView) findViewById(R.id.gridView);
-        GridViewAdapter gridViewAdapter = new GridViewAdapter(this, R.layout.row_grid);
-        gridView.setAdapter(gridViewAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String path = (String) adapterView.getItemAtPosition(i);
-                Toast.makeText(MainActivity.this, path, Toast.LENGTH_SHORT).show();
-            }
-        });
-        BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask(gridViewAdapter);
-        bitmapWorkerTask.execute();
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Toast.makeText(getApplicationContext(), "您点击了设置", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight
@@ -107,15 +62,76 @@ public class MainActivity extends ActionBarActivity {
         return BitmapFactory.decodeFile(filePath, options);
     }
 
-
     public static Bitmap decodeSampledBitmapFromFile(String filePath) {
         return decodeSampledBitmapFromFile(filePath, 320, 240);
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        //todo clear strictmode and replace it with asynctask
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        GridView gridView = (GridView) findViewById(R.id.gridView);
+        GridViewAdapter gridViewAdapter = new GridViewAdapter(this, R.layout.row_grid);
+        gridView.setAdapter(gridViewAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String path = (String) adapterView.getItemAtPosition(i);
+                Toast.makeText(MainActivity.this, path, Toast.LENGTH_SHORT).show();
+                try {
+                    (new HttpFileUpload(path)).Send_Now();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(MainActivity.this,path+ "Upload completed",Toast.LENGTH_LONG).show();
+            }
+        });
+        BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask(gridViewAdapter);
+        bitmapWorkerTask.execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_upload_test) {
+            Toast.makeText(getApplicationContext(), "Start Upload", Toast.LENGTH_SHORT).show();
+//            String filePath = Environment.getExternalStorageDirectory().getPath() + "/DCIM/upload1.jpg";
+//            HttpFileUpload httpFileUpload =  new HttpFileUpload(filePath);
+//            try {
+//                httpFileUpload.Send_Now();
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+            Toast.makeText(getApplicationContext(), "Upload completed", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        if (id == R.id.action_settings) {
+            Toast.makeText(getApplicationContext(), "Click setting", Toast.LENGTH_LONG).show();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     private class BitmapWorkerTask extends AsyncTask<Void, String, Void> {
-        private File targetDirector;
         GridViewAdapter gridViewAdapter;
+        private File targetDirector;
 
         public BitmapWorkerTask(GridViewAdapter gridViewAdapter) {
             this.gridViewAdapter = gridViewAdapter;
@@ -139,12 +155,12 @@ public class MainActivity extends ActionBarActivity {
                         publishProgress(file.getAbsolutePath());
                     }
                 } else {
-                    if(!file.toString().endsWith(".thumbnails"))
-                    for (File f : file.listFiles()) {
-                        if (f.toString().endsWith(".jpg")) {
-                            publishProgress(f.getAbsolutePath());
+                    if (!file.toString().endsWith(".thumbnails"))
+                        for (File f : file.listFiles()) {
+                            if (f.toString().endsWith(".jpg")) {
+                                publishProgress(f.getAbsolutePath());
+                            }
                         }
-                    }
                 }
             }
             return null;
