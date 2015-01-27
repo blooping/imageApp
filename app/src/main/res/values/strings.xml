@@ -5,5 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">设置</string>
     <string name="action_upload_test">uptest</string>
+    <string name="title_activity_image_detial_view">ImageDetialViewActivity</string>
+    <string name="upload">upload</string>
 
 </resources>

@@ -1,7 +1,6 @@
 package cc.sgd.imageapp;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,61 +13,31 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import cc.sgd.imageapp.adapter.GridViewAdapter;
-import cc.sgd.imageapp.app.HttpFileUpload;
 
 public class MainActivity extends ActionBarActivity {
-    // todo 使用图片缓存来提升速度
-
-    public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight
-    ) {
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options) {
-        return calculateInSampleSize(options, 512, 384);
-    }
-
-    public static Bitmap decodeSampledBitmapFromFile(String filePath, int reqWidth, int reqHeight) {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, options);
-
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(filePath, options);
-    }
-
-    public static Bitmap decodeSampledBitmapFromFile(String filePath) {
-        return decodeSampledBitmapFromFile(filePath, 320, 240);
-    }
+    //TODO use content to get all picture in sdcard
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this)
+                .memoryCache(new WeakMemoryCache())
+                .threadPoolSize(5)
+                .writeDebugLogs()
+                .build();
+        // Initialize ImageLoader with configuration.
+
+        ImageLoader.getInstance().init(configuration);
+
+
         //todo clear strictmode and replace it with asynctask
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -80,13 +49,16 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String path = (String) adapterView.getItemAtPosition(i);
-                Toast.makeText(MainActivity.this, path, Toast.LENGTH_SHORT).show();
-                try {
-                    (new HttpFileUpload(path)).Send_Now();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                Toast.makeText(MainActivity.this,path+ "Upload completed",Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainActivity.this, path, Toast.LENGTH_SHORT).show();
+//                try {
+//                    (new HttpFileUpload(path)).Send_Now();
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//                Toast.makeText(MainActivity.this, path + "Upload completed", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(), ImageDetialViewActivity.class);
+                intent.putExtra("path", path);
+                startActivity(intent);
             }
         });
         BitmapWorkerTask bitmapWorkerTask = new BitmapWorkerTask(gridViewAdapter);
