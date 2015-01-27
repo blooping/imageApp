@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -56,6 +56,7 @@ public class GridViewAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         View row = convertView;
         ViewHolder holder = null;
+        String path = null;
 
         if (row == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
@@ -67,12 +68,14 @@ public class GridViewAdapter extends BaseAdapter {
             row.setTag(holder);
         } else {
             holder = (ViewHolder) row.getTag();
+            holder.position = position;
         }
-        new GetViewAsyncTask(position, holder, data.get(position)).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR,null);
+        // TODO cache picture in memory
+        new GetViewAsyncTask(position, holder, data.get(position)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
         return row;
     }
 
-    private static class GetViewAsyncTask extends AsyncTask<ViewHolder, Void, Bitmap> {
+    private static class GetViewAsyncTask extends AsyncTask<Void, Void, Bitmap> {
 
         private int mPosition;
         private ViewHolder mHolder;
@@ -85,9 +88,10 @@ public class GridViewAdapter extends BaseAdapter {
         }
 
         @Override
-        protected Bitmap doInBackground(ViewHolder... params) {
+        protected Bitmap doInBackground(Void... params) {
             return MainActivity.decodeSampledBitmapFromFile(mPath);
         }
+
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
@@ -100,7 +104,7 @@ public class GridViewAdapter extends BaseAdapter {
 
     static class ViewHolder {
         ImageView image;
-//        TextView imageTitle;
+        //        TextView imageTitle;
         int position;
     }
 }

@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import cc.sgd.imageapp.adapter.GridViewAdapter;
 import cc.sgd.imageapp.app.HttpFileUpload;
