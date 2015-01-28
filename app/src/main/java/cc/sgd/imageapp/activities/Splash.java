@@ -1,6 +1,5 @@
 package cc.sgd.imageapp.activities;
 
-import cc.sgd.imageapp.activities.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -13,12 +12,7 @@ import android.view.View;
 
 import cc.sgd.imageapp.R;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- *
- * @see SystemUiHider
- */
+
 public class Splash extends Activity {
 
 
