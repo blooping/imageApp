@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cc.sgd.imageapp.ImageDetialViewActivity"
+    tools:context="cc.sgd.imageapp.activities.ImageDetialViewActivity"
     android:orientation="vertical">
 
     <ScrollView

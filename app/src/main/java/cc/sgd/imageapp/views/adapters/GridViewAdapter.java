@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -21,11 +20,6 @@ import cc.sgd.imageapp.R;
  * Created by gdshen95 on 2015/1/9.
  */
 public class GridViewAdapter extends BaseAdapter {
-    DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
-            .cacheInMemory(true)
-            .cacheOnDisk(true)
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .build();
     private Context context;
     private int layoutResourceId;
     private ArrayList<String> data = new ArrayList<>();

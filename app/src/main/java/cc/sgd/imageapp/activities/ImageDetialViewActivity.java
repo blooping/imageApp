@@ -1,4 +1,4 @@
-package cc.sgd.imageapp;
+package cc.sgd.imageapp.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -9,8 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.MediaType;
@@ -19,9 +17,12 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+
+import cc.sgd.imageapp.R;
 
 
 public class ImageDetialViewActivity extends ActionBarActivity {
@@ -40,8 +41,8 @@ public class ImageDetialViewActivity extends ActionBarActivity {
         ImageView imageView = (ImageView) findViewById(R.id.imageDetail);
         String path = getIntent().getStringExtra("path");
 
-        String imageUrl = ImageDownloader.Scheme.FILE.wrap(path);
-        ImageLoader.getInstance().displayImage(imageUrl, imageView);
+        Picasso.with(this).load(new File(path)).into(imageView);
+
     }
 
 

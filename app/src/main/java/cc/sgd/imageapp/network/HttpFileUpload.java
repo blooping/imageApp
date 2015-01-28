@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@Deprecated
 public class HttpFileUpload implements Runnable {
     URL connectURL;
     FileInputStream fileInputStream;

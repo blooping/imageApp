@@ -1,10 +1,9 @@
-package cc.sgd.imageapp;
+package cc.sgd.imageapp.activities;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,12 +12,10 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
 import java.io.File;
 
+import cc.sgd.imageapp.R;
+import cc.sgd.imageapp.activities.ImageDetialViewActivity;
 import cc.sgd.imageapp.views.adapters.GridViewAdapter;
 
 public class MainActivity extends ActionBarActivity {
@@ -28,19 +25,6 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(this)
-                .memoryCache(new WeakMemoryCache())
-                .threadPoolSize(5)
-                .writeDebugLogs()
-                .build();
-        // Initialize ImageLoader with configuration.
-
-        ImageLoader.getInstance().init(configuration);
-
-
-        //todo clear strictmode and replace it with asynctask
-//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//        StrictMode.setThreadPolicy(policy);
 
         GridView gridView = (GridView) findViewById(R.id.gridView);
         GridViewAdapter gridViewAdapter = new GridViewAdapter(this, R.layout.row_grid);
@@ -49,13 +33,6 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String path = (String) adapterView.getItemAtPosition(i);
-//                Toast.makeText(MainActivity.this, path, Toast.LENGTH_SHORT).show();
-//                try {
-//                    (new HttpFileUpload(path)).Send_Now();
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-//                Toast.makeText(MainActivity.this, path + "Upload completed", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), ImageDetialViewActivity.class);
                 intent.putExtra("path", path);
                 startActivity(intent);
