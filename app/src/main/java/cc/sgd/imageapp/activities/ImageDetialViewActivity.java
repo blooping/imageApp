@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.MediaType;
@@ -27,11 +28,9 @@ import cc.sgd.imageapp.R;
 
 public class ImageDetialViewActivity extends ActionBarActivity {
 
-    public static final MediaType MEDIA_TYPE_JPG
-            = MediaType.parse("image/jpg");
+    public static final MediaType MEDIA_TYPE_JPG = MediaType.parse("image/jpg");
 
     private final OkHttpClient client = new OkHttpClient();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +38,10 @@ public class ImageDetialViewActivity extends ActionBarActivity {
         setContentView(R.layout.activity_image_detial_view);
 
         ImageView imageView = (ImageView) findViewById(R.id.imageDetail);
+        ProgressBarCircularIndeterminate progressBarCircularIndeterminate =
+                (ProgressBarCircularIndeterminate) findViewById(R.id.progressBarCircularIndeterminate);
+        progressBarCircularIndeterminate.setVisibility(View.INVISIBLE);
+
         String path = getIntent().getStringExtra("path");
 
         Picasso.with(this).load(new File(path)).into(imageView);
@@ -71,11 +74,17 @@ public class ImageDetialViewActivity extends ActionBarActivity {
         Toast.makeText(this, "Upload start", Toast.LENGTH_LONG).show();
         String path = getIntent().getStringExtra("path");
         Log.d(getResources().getString(R.string.tag), path);
+        ProgressBarCircularIndeterminate progressBarCircularIndeterminate = (ProgressBarCircularIndeterminate) findViewById(R.id.progressBarCircularIndeterminate);
+        progressBarCircularIndeterminate.setVisibility(View.VISIBLE);
         run(path);
     }
 
     public void run(String filePath) throws Exception {
         File file = new File(filePath);
+        ProgressBarCircularIndeterminate progressBarCircularIndeterminate =
+        (ProgressBarCircularIndeterminate) findViewById(R.id.progressBarCircularIndeterminate);
+        progressBarCircularIndeterminate.setVisibility(View.VISIBLE);
+
         RequestBody requestBody = new MultipartBuilder()
                 .type(MultipartBuilder.FORM)
                 .addPart(
@@ -98,6 +107,15 @@ public class ImageDetialViewActivity extends ActionBarActivity {
             public void onResponse(Response response) throws IOException {
                 if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
                 Log.d(getResources().getString(R.string.tag), response.body().string());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ProgressBarCircularIndeterminate progressBarCircularIndeterminate =
+                                (ProgressBarCircularIndeterminate) findViewById(R.id.progressBarCircularIndeterminate);
+                        progressBarCircularIndeterminate.setVisibility(View.INVISIBLE);
+                        Toast.makeText(getApplicationContext(),"upload finished",Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

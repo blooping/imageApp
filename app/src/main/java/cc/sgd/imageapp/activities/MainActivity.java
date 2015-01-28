@@ -15,16 +15,17 @@ import android.widget.Toast;
 import java.io.File;
 
 import cc.sgd.imageapp.R;
-import cc.sgd.imageapp.activities.ImageDetialViewActivity;
 import cc.sgd.imageapp.views.adapters.GridViewAdapter;
 
 public class MainActivity extends ActionBarActivity {
     //TODO use content to get all picture in sdcard
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         GridView gridView = (GridView) findViewById(R.id.gridView);
         GridViewAdapter gridViewAdapter = new GridViewAdapter(this, R.layout.row_grid);
@@ -70,12 +71,14 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
 
+
         if (id == R.id.action_settings) {
             Toast.makeText(getApplicationContext(), "Click setting", Toast.LENGTH_LONG).show();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     private class BitmapWorkerTask extends AsyncTask<Void, String, Void> {
         GridViewAdapter gridViewAdapter;

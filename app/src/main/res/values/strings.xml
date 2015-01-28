@@ -9,4 +9,7 @@
     <string name="upload">upload</string>
     <string name="tag">cc.sgd.imageapp.tag</string>
 
+    <string name="title_activity_splash">Imcloud</string>
+    <string name="dummy_content">Welcome to ImageApp</string>
+
 </resources>
