@@ -7,5 +7,6 @@
     <string name="action_upload_test">uptest</string>
     <string name="title_activity_image_detial_view">ImageDetialViewActivity</string>
     <string name="upload">upload</string>
+    <string name="tag">cc.sgd.imageapp.tag</string>
 
 </resources>

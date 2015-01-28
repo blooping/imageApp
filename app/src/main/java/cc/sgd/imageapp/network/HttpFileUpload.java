@@ -1,4 +1,4 @@
-package cc.sgd.imageapp.app;
+package cc.sgd.imageapp.network;
 
 import android.util.Log;
 

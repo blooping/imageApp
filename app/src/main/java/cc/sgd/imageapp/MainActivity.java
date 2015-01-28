@@ -19,7 +19,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.File;
 
-import cc.sgd.imageapp.adapter.GridViewAdapter;
+import cc.sgd.imageapp.views.adapters.GridViewAdapter;
 
 public class MainActivity extends ActionBarActivity {
     //TODO use content to get all picture in sdcard
@@ -39,8 +39,8 @@ public class MainActivity extends ActionBarActivity {
 
 
         //todo clear strictmode and replace it with asynctask
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+//        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+//        StrictMode.setThreadPolicy(policy);
 
         GridView gridView = (GridView) findViewById(R.id.gridView);
         GridViewAdapter gridViewAdapter = new GridViewAdapter(this, R.layout.row_grid);

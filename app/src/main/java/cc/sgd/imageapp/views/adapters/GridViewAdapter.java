@@ -1,4 +1,4 @@
-package cc.sgd.imageapp.adapter;
+package cc.sgd.imageapp.views.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,9 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.download.ImageDownloader;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import cc.sgd.imageapp.R;
@@ -68,12 +68,12 @@ public class GridViewAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) row.getTag();
         }
-        String imageUrl = ImageDownloader.Scheme.FILE.wrap(data.get(position));
-        ImageLoader.getInstance().displayImage(imageUrl, holder.image, displayImageOptions);
+        Picasso.with(context).load(new File(data.get(position))).fit().centerCrop().into(holder.image);
 
         return row;
     }
 
+    //
     static class ViewHolder {
         ImageView image;
     }
